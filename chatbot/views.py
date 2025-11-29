@@ -12,26 +12,6 @@ from .models import Conversation, Message
 from .utils import call_ollama_chat, extract_text_from_pdf, web_search, list_ollama_models
 import re
 
-# 
-# def get_or_create_profile(request):
-    # """
-    # Simple gestion par nom dans la session. On pourrait faire plus complexe.
-    # """
-    # profile_name = request.session.get("profile_name")
-# 
-    # if request.method == "POST":
-        # new_name = request.POST.get("profile_name")
-        # if new_name:
-            # profile_name = new_name.strip()
-            # request.session["profile_name"] = profile_name
-# 
-    # if not profile_name:
-        # profile_name = "Default"
-        # request.session["profile_name"] = profile_name
-# 
-    # profile, _ = Profile.objects.get_or_create(name=profile_name)
-    # return profile
-# 
 
 @login_required
 def chat_view(request):
@@ -64,6 +44,7 @@ def chat_view(request):
             available_models = [settings.DEFAULT_MODEL]
     except Exception:
         available_models = [settings.DEFAULT_MODEL]
+        print("echec")
 
     current_model = request.session.get("current_model", available_models[0])
 
@@ -134,14 +115,17 @@ def send_message(request):
             )
 
         # on tronque un peu pour éviter un contexte trop lourd
-        pdf_text_short = pdf_text[:4000]
+        pdf_text_short = pdf_text[:10000]
         sys_msg = (
-            f"Document PDF fourni par l'utilisateur ({uploaded_file.name}) :\n"
-            f"{pdf_text_short}"
-        )
+               "Contexte document PDF fourni par l'utilisateur.\n"
+                    "=== Début du document ===\n"
+                        f"{pdf_text_short}\n"
+                    "=== Fin du document ===\n\n"
+                 "Consigne: prends en compte  ce contenu pour répondre aux questions."
+                    )
         extra_system_messages.append(sys_msg)
 
-        # on sauvegarde aussi en base si tu veux garder la trace
+        # on sauvegarde pour garder la trace
         Message.objects.create(
             conversation=conversation,
             role="system",
@@ -157,11 +141,12 @@ def send_message(request):
                 {"error": f"Erreur lors de la recherche web : {e}"},
                 status=400
             )
-
         sys_msg = (
-            f"Résultats de recherche web pour la requête suivante : « {message} ».\n\n"
-            f"{search_summary}"
-        )
+             f"Résultats de recherche web pour la requête « {message} » :\n"
+            f"{search_summary}\n\n"
+            "Consigne: Réponds en t'appuyant sur ces résultats."
+            )
+
         extra_system_messages.append(sys_msg)
 
         Message.objects.create(

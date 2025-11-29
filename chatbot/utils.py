@@ -1,8 +1,11 @@
 # chatbot/utils.py
 import requests
 from django.conf import settings
-from duckduckgo_search import DDGS
+from ddgs import DDGS
 import PyPDF2
+from pdf2image import convert_from_bytes
+import pytesseract
+from PIL import Image
 from io import BytesIO
 import logging
 from typing import Any, Dict, List, Optional
@@ -17,10 +20,12 @@ def _normalize_host(host: str) -> str:
     """Assure que host contient un schéma (http:// ou https://)."""
     if not host:
         return "http://localhost:11434"
-    host = host.strip()
-    if not host.startswith(("http://", "https://")):
-        host = "http://" + host
-    return host
+    test = host.strip()
+    if not test.startswith(("http://", "https://")):
+        test = "http://" + test
+    return test
+
+
 
 def call_ollama_chat(messages: List[Dict[str, Any]], model: str, timeout: int = 120) -> Optional[str]:
     """
@@ -75,26 +80,21 @@ def call_ollama_chat(messages: List[Dict[str, Any]], model: str, timeout: int = 
     return content
 
 
-    
-
-
-
-
-
-
-
+from pdfminer.high_level import extract_text
 
 def extract_text_from_pdf(uploaded_file):
     """
-    Extrait le texte d'un fichier PDF uploadé (InMemoryUploadedFile).
-    Retourne une chaîne brute.
+    Extrait le texte d'un PDF (InMemoryUploadedFile) avec pdfminer.six.
+    Fonctionne uniquement si le PDF contient du texte encodé.
     """
-    pdf_bytes = uploaded_file.read()
-    reader = PyPDF2.PdfReader(BytesIO(pdf_bytes))
-    texts = []
-    for page in reader.pages:
-        texts.append(page.extract_text() or "")
-    return "\n".join(texts)
+    try:
+        pdf_bytes = uploaded_file.read()
+        uploaded_file.seek(0)
+        text = extract_text(BytesIO(pdf_bytes))
+        print(text)
+        return text.strip()
+    except Exception as e:
+        raise RuntimeError(f"Erreur extraction PDF: {e}")
 
 
 def web_search(query: str, max_results: int = 5) -> str:
@@ -114,13 +114,40 @@ def web_search(query: str, max_results: int = 5) -> str:
 
     return "Voici quelques résultats issus du web :\n\n" + "\n\n".join(results_text)
 
+
+
 def list_ollama_models():
     """
     Retourne la liste des modèles disponibles dans Ollama (via /api/tags).
     """
-    url = f"{settings.OLLAMA_HOST}/api/tags"
-    resp = requests.get(url, timeout=5)
-    resp.raise_for_status()
-    data = resp.json()
+    raw_host = getattr(settings, "OLLAMA_HOST", "http://localhost:11434")
+    host = raw_host.rstrip("/")
+    host=_normalize_host(host)
+    url = f"{host}/api/tags"
+
+    try:
+        resp = requests.get(url, timeout=5)
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"Erreur lors de l'appel à Ollama /api/tags: {e}")
+        return []
+
+    try:
+        data = resp.json()
+    except ValueError:
+        print(f"Réponse non JSON: {resp.text[:500]}")
+        return []
+
     models = data.get("models", [])
+
     return [m.get("name") for m in models if m.get("name")]
+
+
+
+
+
+
+
+
+
+

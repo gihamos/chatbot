@@ -65,7 +65,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 from dotenv import load_dotenv
 load_dotenv()
 
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "localhost:11434")
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "deepseek-r1:8b")
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "chat"      
