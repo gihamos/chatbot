@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copier tout le projet (y compris entrypoint.sh)
+# Copie tout le projet (y compris entrypoint.sh)
 COPY . .
 
 # Rendre le script exécutable

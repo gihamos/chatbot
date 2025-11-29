@@ -1,18 +1,13 @@
-# chatbot/utils.py
 import requests
 from django.conf import settings
 from ddgs import DDGS
-import PyPDF2
-from pdf2image import convert_from_bytes
-import pytesseract
-from PIL import Image
 from io import BytesIO
 import logging
 from typing import Any, Dict, List, Optional
-import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from django.conf import settings
+from pdfminer.high_level import extract_text
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +75,7 @@ def call_ollama_chat(messages: List[Dict[str, Any]], model: str, timeout: int = 
     return content
 
 
-from pdfminer.high_level import extract_text
+
 
 def extract_text_from_pdf(uploaded_file):
     """

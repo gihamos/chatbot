@@ -1,7 +1,8 @@
 Django>=5.0
 gunicorn
 requests
-ollama
 python-dotenv
 ddgs
 pdfminer.six
+urllib3
+typing

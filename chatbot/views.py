@@ -1,13 +1,10 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import request
-
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.conf import settings
-
 from .models import Conversation, Message
 from .utils import call_ollama_chat, extract_text_from_pdf, web_search, list_ollama_models
 import re
