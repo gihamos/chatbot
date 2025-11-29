@@ -1,0 +1,52 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+*.log
+
+# --- Virtualenv ---
+.venv/
+env/
+venv/
+ENV/
+
+# --- Django ---
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+*.pot
+*.mo
+
+# --- IDE / éditeurs ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Tests / coverage ---
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# --- Ollama / IA ---
+# Si tu génères des fichiers temporaires ou caches pour Ollama
+ollama_cache/
+ollama_models/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Autres ---
+*.pdf
+*.docx
+*.tmp
