@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Assistant IA - Ollama</title>
+
+  <!-- PicoCSS pour la base -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+
+  <!-- Highlight.js pour le code -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- Marked pour le Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-elevated: #020617;
+      --border-subtle: #1e293b;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #22c55e;
+      --accent-soft: rgba(34,197,94,0.1);
+      --danger-soft: rgba(248,113,113,0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+      padding-bottom: 2rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    header h3 {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    header small {
+      color: var(--text-muted);
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: .25rem .7rem;
+      border: 1px solid #1f2933;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    /* Boutons header */
+    #header-actions {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+    }
+
+    #header-actions form,
+    #header-actions button {
+      margin: 0;
+    }
+
+    /* Card principale type ChatGPT */
+    #chat-shell {
+      border-radius: 16px;
+      border: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.8) 0, #020617 45%, #020617 100%);
+      min-height: calc(100vh - 6rem);
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      gap: .75rem;
+    }
+
+    #chat-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      padding: .25rem .5rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid #1e293b;
+    }
+
+    #chat-meta select {
+      background: #020617;
+      border-radius: 999px;
+      border: 1px solid #1e293b;
+      padding: .15rem .5rem;
+      color: var(--text-main);
+      font-size: 0.85rem;
+    }
+
+    #status {
+      margin-left: auto;
+    }
+
+    /* Zone messages */
+    #chat-box {
+      flex: 1;
+      margin-top: .5rem;
+      border-radius: 12px;
+      padding: 1rem;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid #1f2933;
+      overflow-y: auto;
+      max-height: calc(100vh - 15rem);
+    }
+
+    .message-row {
+      display: flex;
+      gap: .75rem;
+      margin-bottom: .9rem;
+    }
+
+    .message-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .avatar-user {
+      background: #22c55e;
+      color: #022c22;
+    }
+
+    .avatar-bot {
+      background: #0ea5e9;
+      color: #0b1120;
+    }
+
+    .avatar-system {
+      background: #4b5563;
+      color: #020617;
+    }
+
+    .message-bubble {
+      border-radius: 12px;
+      padding: .7rem .9rem;
+      font-size: 0.9rem;
+      max-width: 80%;
+    }
+
+    .msg-user .message-bubble {
+      margin-left: auto;
+      background: #022c22;
+      border: 1px solid rgba(34,197,94,0.5);
+      color: var(--text-main);
+    }
+
+    .msg-bot .message-bubble {
+      background: #020617;
+      border: 1px solid #1f2933;
+    }
+
+    .msg-system .message-bubble {
+      background: rgba(75,85,99,0.15);
+      border: 1px dashed #4b5563;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .message-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: .25rem;
+    }
+
+    .message-content p {
+      margin: 0 0 .3rem 0;
+    }
+
+    .message-content pre {
+      margin-top: .4rem;
+      background: #020617;
+      border-radius: 8px;
+      padding: .75rem;
+      border: 1px solid #1f2933;
+      overflow-x: auto;
+      font-size: 0.8rem;
+    }
+
+    .message-content code {
+      font-family: Consolas, "Fira Code", monospace;
+    }
+
+    /* Zone input */
+    #input-shell {
+      margin-top: .5rem;
+      border-radius: 12px;
+      padding: .75rem;
+      background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.9));
+      border: 1px solid #1e293b;
+    }
+
+    #input-area textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 70px;
+      max-height: 200px;
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #1f2933;
+      padding: .7rem .8rem;
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+
+    #input-toolbar {
+      margin-top: .6rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+
+    .file-label {
+      border-radius: 999px;
+      padding: .3rem .8rem;
+      border: 1px dashed #4b5563;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      color: var(--text-muted);
+      background: rgba(15,23,42,0.7);
+    }
+
+    #file-name {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .toggle input {
+      appearance: none;
+      width: 34px;
+      height: 18px;
+      background: #4b5563;
+      border-radius: 999px;
+      position: relative;
+      cursor: pointer;
+      outline: none;
+      transition: background .2s;
+    }
+    .toggle input::before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: white;
+      top: 2px;
+      left: 2px;
+      transition: transform .2s;
+    }
+    .toggle input:checked {
+      background: #22c55e;
+    }
+    .toggle input:checked::before {
+      transform: translateX(16px);
+    }
+
+    #send-btn {
+      border-radius: 999px;
+      padding-inline: 1.3rem;
+    }
+
+    /* Spinner "réflexion" */
+    #status {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+    }
+    .dots {
+      display: inline-flex;
+      gap: 3px;
+    }
+    .dots span {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: #eab308;
+      animation: bounce 1s infinite ease-in-out;
+    }
+    .dots span:nth-child(2) { animation-delay: .15s; }
+    .dots span:nth-child(3) { animation-delay: .3s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: .7; }
+      40% { transform: translateY(-3px); opacity: 1; }
+    }
+
+    footer {
+      margin-top: .75rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Slide panel conversations */
+    #conv-toggle {
+      border-radius: 999px;
+      font-size: 0.8rem;
+    }
+
+    #conv-panel-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      display: none;
+      z-index: 40;
+    }
+
+    #conv-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 320px;
+      max-width: 90vw;
+      height: 100%;
+      background: #020617;
+      border-left: 1px solid #1f2933;
+      padding: 1rem;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+      transform: translateX(100%);
+      transition: transform .25s ease-out;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #conv-panel.open {
+      transform: translateX(0);
+    }
+    #conv-panel-backdrop.open {
+      display: block;
+    }
+
+    #conv-list {
+      list-style: none;
+      padding-left: 0;
+      margin-top: .5rem;
+      flex: 1;
+      overflow-y: auto;
+      font-size: 0.85rem;
+    }
+
+    #conv-list li {
+      margin-bottom: .4rem;
+      padding: .4rem .5rem;
+      border-radius: 8px;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid #1f2933;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    #conv-list a {
+      text-decoration: none;
+      color: var(--text-main);
+      display: block;
+    }
+
+    #conv-list a.active {
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    #conv-list small {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    #conv-panel h4 {
+      margin-bottom: .3rem;
+    }
+
+    @media (max-width: 768px) {
+      #chat-box {
+        max-height: calc(100vh - 17rem);
+      }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <!-- HEADER -->
+  <header>
+    <div>
+      <h3>🤖 Assistant IA</h3>
+      <div class="pill">
+        <span class="pill-dot"></span>
+        Django · Ollama · {{ current_model }}
+      </div>
+      <small>Connecté en tant que <strong>{{ request.user.username }}</strong></small>
+    </div>
+    <div id="header-actions">
+      <button id="conv-toggle" class="secondary">🗂 Conversations</button>
+
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="secondary">Se déconnecter</button>
+      </form>
+    </div>
+  </header>
+
+  <!-- SHELL Chat -->
+  <section id="chat-shell">
+    <!-- Meta ligne -->
+    <div id="chat-meta">
+      <span>Conversation #{{ conversation.id }}</span>
+
+      <span>·</span>
+
+      <span>Modèle :</span>
+      <select id="model-select">
+        {% for m in available_models %}
+          <option value="{{ m }}"{% if m == current_model %} selected{% endif %}>{{ m }}</option>
+        {% endfor %}
+      </select>
+
+      <span id="status">✅ Prêt</span>
+    </div>
+
+    <!-- Messages -->
+    <div id="chat-box">
+      {% for m in messages %}
+        {% if m.role == "user" %}
+          <div class="message-row msg-user">
+            <div class="message-bubble">
+              <div class="message-meta">Toi</div>
+              <div class="message-content">
+                <p>{{ m.content }}</p>
+              </div>
+            </div>
+            <div class="message-avatar avatar-user">U</div>
+          </div>
+        {% elif m.role == "assistant" %}
+          <div class="message-row msg-bot">
+            <div class="message-avatar avatar-bot">IA</div>
+            <div class="message-bubble">
+              <div class="message-meta">Assistant</div>
+              <div class="message-content">
+                <pre><code>{{ m.content }}</code></pre>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="message-row msg-system">
+            <div class="message-avatar avatar-system">S</div>
+            <div class="message-bubble">
+              <div class="message-meta">Système</div>
+              <div class="message-content">
+                <p>{{ m.content }}</p>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% empty %}
+        <div class="message-row msg-system">
+          <div class="message-avatar avatar-system">S</div>
+          <div class="message-bubble">
+            <div class="message-meta">Système</div>
+            <div class="message-content">
+              <p>Commence une conversation avec le modèle IA 👇</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Input -->
+    <form id="chat-form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div id="input-shell">
+        <div id="input-area">
+          <textarea id="message-input" name="message" placeholder="Pose ta question ici..."></textarea>
+        </div>
+
+        <div id="input-toolbar">
+          <div style="display:flex; gap:.5rem; align-items:center; flex-wrap:wrap;">
+            <!-- Upload PDF -->
+            <label class="file-label">
+              📎 Joindre un PDF
+              <input type="file" id="pdf-file" name="file" accept="application/pdf" style="display:none;">
+            </label>
+            <span id="file-name"></span>
+
+            <!-- Toggle recherche web -->
+            <label class="toggle">
+              <input type="checkbox" id="web-toggle">
+              <span>Recherche web</span>
+            </label>
+          </div>
+
+          <button type="submit" id="send-btn">Envoyer</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <footer>
+    Développé par : <strong>NGANGA YABIE Taïse De Thèse</strong>
+  </footer>
+</main>
+
+<!-- Panneau slide Conversations -->
+<div id="conv-panel-backdrop"></div>
+<aside id="conv-panel">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h4>💬 Mes conversations</h4>
+    <button id="conv-close" class="secondary" style="padding:2px 8px; font-size:0.8rem;">✕</button>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.5rem;">
+    <span style="font-size:0.85rem;">Total : {{ conversations|length }}</span>
+    <a href="{% url 'new_conversation' %}" role="button" class="secondary" style="font-size:0.8rem;">+ Nouvelle</a>
+  </div>
+
+  <ul id="conv-list">
+    {% for conv in conversations %}
+      <li>
+        <div style="flex:1; min-width:0;">
+          <a href="{% url 'switch_conversation' conv.id %}"
+             class="{% if conv.id == current_conversation_id %}active{% endif %}">
+            {{ conv.title|default:"Conversation" }}<br>
+            <small>{{ conv.created_at|date:"d/m H:i" }}</small>
+          </a>
+        </div>
+        <form method="post" action="{% url 'delete_conversation' conv.id %}" style="margin:0;">
+          {% csrf_token %}
+          <button type="submit" class="secondary" style="padding:2px 6px; font-size:0.75rem;"
+                  onclick="return confirm('Supprimer cette conversation ?');">
+            🗑
+          </button>
+        </form>
+      </li>
+    {% empty %}
+      <li>Aucune conversation pour le moment.</li>
+    {% endfor %}
+  </ul>
+</aside>
+
+<script>
+  // Config Marked
+  marked.setOptions({
+    breaks: true
+  });
+
+  const form = document.getElementById("chat-form");
+  const chatBox = document.getElementById("chat-box");
+  const statusEl = document.getElementById("status");
+  const messageInput = document.getElementById("message-input");
+  const modelSelect = document.getElementById("model-select");
+  const pdfFileInput = document.getElementById("pdf-file");
+  const fileNameEl = document.getElementById("file-name");
+  const webToggle = document.getElementById("web-toggle");
+  const sendBtn = document.getElementById("send-btn");
+
+  const convToggle = document.getElementById("conv-toggle");
+  const convPanel = document.getElementById("conv-panel");
+  const convBackdrop = document.getElementById("conv-panel-backdrop");
+  const convClose = document.getElementById("conv-close");
+
+  // État : est-ce qu'une requête est en cours ?
+  let isThinking = false;
+
+  function openConvPanel() {
+    convPanel.classList.add("open");
+    convBackdrop.classList.add("open");
+  }
+  function closeConvPanel() {
+    convPanel.classList.remove("open");
+    convBackdrop.classList.remove("open");
+  }
+
+  convToggle.addEventListener("click", openConvPanel);
+  convClose.addEventListener("click", closeConvPanel);
+  convBackdrop.addEventListener("click", closeConvPanel);
+
+  pdfFileInput.addEventListener("change", () => {
+    if (pdfFileInput.files.length > 0) {
+      fileNameEl.textContent = pdfFileInput.files[0].name;
+    } else {
+      fileNameEl.textContent = "";
+    }
+  });
+
+  function appendMessage(role, text) {
+    const row = document.createElement("div");
+    row.classList.add("message-row");
+
+    const bubble = document.createElement("div");
+    bubble.classList.add("message-bubble");
+
+    const meta = document.createElement("div");
+    meta.classList.add("message-meta");
+
+    const content = document.createElement("div");
+    content.classList.add("message-content");
+
+    let avatar = document.createElement("div");
+    avatar.classList.add("message-avatar");
+
+    if (role === "user") {
+      row.classList.add("msg-user");
+      meta.textContent = "Toi";
+      avatar.classList.add("avatar-user");
+      avatar.textContent = "U";
+      content.innerHTML = "<p>" + (text || "") + "</p>";
+      row.appendChild(bubble);
+      row.appendChild(avatar);
+    } else if (role === "assistant") {
+      row.classList.add("msg-bot");
+      meta.textContent = "Assistant";
+      avatar.classList.add("avatar-bot");
+      avatar.textContent = "IA";
+      const html = marked.parse(text || "");
+      content.innerHTML = html;
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+    } else {
+      row.classList.add("msg-system");
+      meta.textContent = "Système";
+      avatar.classList.add("avatar-system");
+      avatar.textContent = "S";
+      content.innerHTML = "<p>" + (text || "") + "</p>";
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+    }
+
+    bubble.appendChild(meta);
+    bubble.appendChild(content);
+
+    chatBox.appendChild(row);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Highlight du code si présent
+    if (window.hljs) {
+      row.querySelectorAll("pre code").forEach(block => {
+        hljs.highlightElement(block);
+      });
+    }
+  }
+
+  function setStatus(text, thinking=false) {
+    if (thinking) {
+      statusEl.innerHTML = `
+        <span>🧠 L’IA réfléchit…</span>
+        <span class="dots"><span></span><span></span><span></span></span>
+      `;
+      statusEl.style.color = "#eab308";
+    } else {
+      statusEl.textContent = text;
+      statusEl.style.color = "#9ca3af";
+    }
+  }
+
+  // 🔒 Bloquer / débloquer les entrées pendant la génération
+  function setThinkingState(on) {
+    isThinking = on;
+
+    messageInput.disabled = on;
+    modelSelect.disabled = on;
+    pdfFileInput.disabled = on;
+    webToggle.disabled = on;
+    sendBtn.disabled = on;
+
+    if (on) {
+      sendBtn.textContent = "Envoi...";
+      sendBtn.classList.add("secondary");
+    } else {
+      sendBtn.textContent = "Envoyer";
+      sendBtn.classList.remove("secondary");
+    }
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    //Si l'IA n'a pas encore répondu, on empêche d'envoyer
+    if (isThinking) {
+      appendMessage("system", "Veuillez attendre la réponse de l’IA avant d'envoyer un nouveau message.");
+      return;
+    }
+
+    const msg = messageInput.value.trim();
+    const model = modelSelect.value;
+
+    // Déterminer l'action
+    let action = "chat";
+    if (webToggle.checked) {
+      action = "web";
+    } else if (pdfFileInput.files.length > 0) {
+      action = "pdf";
+    }
+
+    if (!msg && action === "chat") {
+      return;
+    }
+
+    appendMessage("user", msg || "(Sans message, action spéciale)");
+    setStatus("", true);
+    setThinkingState(true);
+
+    const formData = new FormData();
+    formData.append("message", msg);
+    formData.append("action", action);
+    formData.append("model", model);
+    const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+    formData.append("csrfmiddlewaretoken", csrfToken);
+
+    if (action === "pdf" && pdfFileInput.files.length > 0) {
+      formData.append("file", pdfFileInput.files[0]);
+    }
+
+    fetch("{% url 'send_message' %}", {
+      method: "POST",
+      body: formData
+    }).then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          appendMessage("system", "Erreur : " + data.error);
+        } else {
+          appendMessage("assistant", data.answer);
+        }
+      })
+      .catch(err => {
+        appendMessage("system", "Erreur réseau : " + err);
+      })
+      .finally(() => {
+        setStatus("✅ Prêt", false);
+        setThinkingState(false);
+        messageInput.value = "";
+        // Optionnel : vider le fichier après envoi
+        // pdfFileInput.value = "";
+        // fileNameEl.textContent = "";
+      });
+  });
+
+  // Highlight initial des messages assistant déjà présents
+  document.addEventListener("DOMContentLoaded", () => {
+    if (window.hljs) {
+      document.querySelectorAll(".message-content pre code").forEach(block => {
+        hljs.highlightElement(block);
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

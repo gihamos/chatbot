@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Connexion</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+  <h2>Connexion</h2>
+
+  {% if form.errors %}
+    <article style="border-left: 4px solid #f97316; padding-left:.5rem;">
+      <strong>Erreur :</strong> Identifiants invalides.
+    </article>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Se connecter</button>
+  </form>
+
+  <p>Pas encore de compte ?
+    <a href="{% url 'register' %}">Créer un compte</a>
+  </p>
+</main>
+</body>
+</html>

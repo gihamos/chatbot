@@ -1,0 +1,8 @@
+Django>=5.0
+gunicorn
+requests
+ollama
+duckduckgo-search
+PyPDF2
+python-dotenv
+ddgs
