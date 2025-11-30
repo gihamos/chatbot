@@ -445,7 +445,7 @@
       <h3>🤖 Assistant IA</h3>
       <div class="pill">
         <span class="pill-dot"></span>
-        Django · Ollama · {{ current_model }}
+        Django · Ollama · <b id="model_view"></b>
       </div>
       <small>Connecté en tant que <strong>{{ request.user.username }}</strong></small>
     </div>
@@ -616,6 +616,22 @@
   const convPanel = document.getElementById("conv-panel");
   const convBackdrop = document.getElementById("conv-panel-backdrop");
   const convClose = document.getElementById("conv-close");
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const select = document.getElementById("model-select");
+  const modelView = document.getElementById("model_view");
+
+  if (!select || !modelView) return;
+
+  // Afficher le modèle sélectionné au chargement
+  modelView.textContent = select.value;
+
+  // Mettre à jour quand l'utilisateur change
+  select.addEventListener("change", (e) => {
+    modelView.textContent = e.target.value;
+  });
+});
 
   // État : est-ce qu'une requête est en cours ?
   let isThinking = false;
