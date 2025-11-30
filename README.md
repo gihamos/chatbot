@@ -117,7 +117,7 @@ python manage.py runserver
 ## 📄 Licence
 Ce projet est open-source sous licence MIT.
 
-## 👤 Auteur
-Taïse De Thèse NGANGA YABIE
+## 👨‍💻 Auteur
+Développé par Taïse De Thèse NGANGA YABIE
 
 ## 💼 Portfolio : [lien](https://gihamos.github.io/portofolio_taise)
