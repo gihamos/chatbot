@@ -120,5 +120,4 @@ Ce projet est open-source sous licence MIT.
 ## 👤 Auteur
 Taïse De Thèse NGANGA YABIE
 
-## 💼 Portfolio : 
-[](https://gihamos.github.io/portofolio_taise)
+## 💼 Portfolio : [lien](https://gihamos.github.io/portofolio_taise)
