@@ -94,6 +94,20 @@ python manage.py runserver
   ```bash
      make createsuperuser
   ```
+## 📸 Visualisation de l'application
+<img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/3cbdf408-a1e9-49bc-8952-2e01f7ffe7b0" />
+
+<img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/f7e6a29e-c774-4335-a28e-39ce60d83086" />
+
+<img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/6da6c838-ff1d-4d9e-8065-452c78501a3b" />
+
+<img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/3a7f2d8e-8e36-4de6-a591-b446f76fe42d" />
+
+<img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/52d7db1a-43c2-4894-86f2-8e51077d8fff" />
+
+
+
+
 ## ✅ À venir
 -  Interface React ou Vue.js
 -  Résumé automatique des PDF
@@ -103,8 +117,7 @@ python manage.py runserver
 ## 📄 Licence
 Ce projet est open-source sous licence MIT.
 
-## 👤 Auteur
-Taïse De Thèse NGANGA YABIE
+## 👨‍💻 Auteur
+Développé par Taïse De Thèse NGANGA YABIE
 
-##💼 Portfolio : 
-[](https://gihamos.github.io/portofolio_taise)
+## 💼 Portfolio : [lien](https://gihamos.github.io/portofolio_taise)
