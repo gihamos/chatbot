@@ -79,14 +79,12 @@ def call_ollama_chat(messages: List[Dict[str, Any]], model: str, timeout: int = 
 
 def extract_text_from_pdf(uploaded_file):
     """
-    Extrait le texte d'un PDF (InMemoryUploadedFile) avec pdfminer.six.
-    Fonctionne uniquement si le PDF contient du texte encodé.
+    cette fonction permet extraire le texte contenu dans le pdf 
     """
     try:
         pdf_bytes = uploaded_file.read()
         uploaded_file.seek(0)
         text = extract_text(BytesIO(pdf_bytes))
-        print(text)
         return text.strip()
     except Exception as e:
         raise RuntimeError(f"Erreur extraction PDF: {e}")

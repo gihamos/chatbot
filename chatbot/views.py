@@ -57,7 +57,7 @@ def chat_view(request):
     return render(request, "chat/chat.html", context)
 
 
-def _clean_model_answer(text: str) -> str:
+def clean_model_answer(text: str) -> str:
     """
     Supprime les blocs <think>...</think> si le modèle en génère,
     et fait un petit strip.
@@ -177,7 +177,7 @@ def send_message(request):
             status=500
         )
 
-    answer = _clean_model_answer(raw_answer)
+    answer = clean_model_answer(raw_answer)
 
     # On sauvegarde la réponse de l'IA
     Message.objects.create(
