@@ -22,7 +22,7 @@ Il est entièrement **conteneurisé avec Docker** et utilise **SQLite** comme ba
 | Backend        | IA / NLP        | Extraction PDF     | Conteneurisation |
 |----------------|------------------|---------------------|------------------|
 | Django 4.x     | Ollama (LLM local) | PyPDF2 / pdfminer.six | Docker / Docker Compose |
-| SQLite         | Modèles comme `llama2`, `deepseek-v3.1` | OCR optionnel (Tesseract) | Volumes persistants |
+| SQLite         | Modèles comme `llama2`, `deepseek-v3.1` | | Volumes persistants |
 | ddgs (DuckDuckGo Search) | Historique structuré | Gestion des fichiers | Réseau interne |
 </pre>
 ---
@@ -62,9 +62,7 @@ python manage.py runserver
 <pre>
 
   chatbot/
-├── core/              # App principale (vues, modèles, utils)
-├── static/            # Fichiers statiques
-├── media/             # Fichiers uploadés (PDF)
+├── chatbot/              # App principale (vues, modèles, utils)
 ├── Dockerfile         # Image Django
 ├── docker-compose.yml # Services Django + Ollama
 ├── entrypoint.sh      # Script de démarrage (migrations + superuser)
