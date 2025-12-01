@@ -117,5 +117,3 @@ Ce projet est open-source sous licence MIT.
 
 ## 👨‍💻 Auteur
 Développé par Taïse De Thèse NGANGA YABIE
-
-## 💼 Portofolio : [lien](https://gihamos.github.io/portofolio_taise)
