@@ -1,4 +1,4 @@
-# 🤖 Chatbot IA Django avec Ollama, PDF et Web Search
+# Chatbot IA Django avec Ollama, PDF et Web Search
 
 Ce projet est un chatbot intelligent développé avec **Django**, intégrant des modèles LLM via **Ollama**, capable d’analyser des documents PDF, de faire des recherches web, et de maintenir un historique conversationnel par utilisateur.  
 Il est entièrement **conteneurisé avec Docker** et utilise **SQLite** comme base de données pour un déploiement simple et portable.
@@ -112,8 +112,8 @@ python manage.py runserver
 -  Export des conversations
 -  Support OCR conditionnel
   
-## 📄 Licence
+## Licence
 Ce projet est open-source sous licence MIT.
 
-## 👨‍💻 Auteur
+## Auteur
 Développé par Taïse De Thèse NGANGA YABIE
