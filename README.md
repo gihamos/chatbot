@@ -5,19 +5,19 @@ Il est entièrement **conteneurisé avec Docker** et utilise **SQLite** comme ba
 
 ---
 
-## 🚀 Fonctionnalités
+## Fonctionnalités
 
-- 🔗 **Intégration Ollama** : dialogue avec des modèles LLM locaux (`llama2`, `deepseek-v3.1`, etc.)
-- 📄 **Analyse de PDF** : extraction automatique du texte et injection dans le contexte conversationnel
-- 🌐 **Recherche Web** : résumé des résultats via DuckDuckGo (`ddgs`)
-- 🧠 **Mémoire conversationnelle** : historique par utilisateur et par session
-- 🐳 **Conteneurisation Docker** : déploiement simplifié avec `docker-compose`
-- 🛠️ **Interface sécurisée** : authentification Django, gestion des utilisateurs
-- 🗂️ **Base SQLite** : simple, légère et persistée via volume Docker
+- **Intégration Ollama** : dialogue avec des modèles LLM locaux (`llama2`, `deepseek-v3.1`, etc.)
+- **Analyse de PDF** : extraction automatique du texte et injection dans le contexte conversationnel
+-  **Recherche Web** : résumé des résultats via DuckDuckGo (`ddgs`)
+-  **Mémoire conversationnelle** : historique par utilisateur et par session
+- **Conteneurisation Docker** : déploiement simplifié avec `docker-compose`
+-  **Interface sécurisée** : authentification Django, gestion des utilisateurs
+- **Base SQLite** : simple, légère et persistée via volume Docker
 
 ---
 
-## 🧰 Technologies utilisées
+##  Technologies utilisées
 
 | Backend        | IA / NLP        | Extraction PDF     | Conteneurisation |
 |----------------|------------------|---------------------|------------------|
@@ -27,7 +27,7 @@ Il est entièrement **conteneurisé avec Docker** et utilise **SQLite** comme ba
 
 ---
 
-## 📦 Installation locale (sans Docker)
+##  Installation locale (sans Docker)
 
 ```bash
 git clone https://github.com/gihamos/chatbot.git
@@ -41,7 +41,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-## 🐳 Déploiement avec Docker + SQLite
+##  Déploiement avec Docker + SQLite
 
 1. Démarrer Ollama en local (hors conteneur)
   ```bash
@@ -58,7 +58,7 @@ python manage.py runserver
    -  Interface web : [](http://localhost:8000)
    -  Admin Django : [](http://localhost:8000/admin)
      
-## 📁 Structure du projet
+##  Structure du projet
 <pre>
 
   chatbot/
@@ -71,7 +71,7 @@ python manage.py runserver
 └── manage.py
 
 </pre>
-## 🧪 Utilisation avec Makefile
+##  Utilisation avec Makefile
 -  Démarer l'app:
    ```bash
    make up
@@ -92,7 +92,7 @@ python manage.py runserver
   ```bash
      make createsuperuser
   ```
-## 📸 Visualisation de l'application
+## Quelque aperçue de l'application
 <img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/3cbdf408-a1e9-49bc-8952-2e01f7ffe7b0" />
 
 <img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/f7e6a29e-c774-4335-a28e-39ce60d83086" />
@@ -106,7 +106,7 @@ python manage.py runserver
 
 
 
-## ✅ À venir
+##  À venir
 -  Interface React ou Vue.js
 -  Résumé automatique des PDF
 -  Export des conversations
