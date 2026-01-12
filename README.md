@@ -97,11 +97,8 @@ python manage.py runserver
 
 <img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/f7e6a29e-c774-4335-a28e-39ce60d83086" />
 
-<img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/6da6c838-ff1d-4d9e-8065-452c78501a3b" />
-
 <img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/3a7f2d8e-8e36-4de6-a591-b446f76fe42d" />
 
-<img width="200" height="300" alt="image" src="https://github.com/user-attachments/assets/52d7db1a-43c2-4894-86f2-8e51077d8fff" />
 
 
 
