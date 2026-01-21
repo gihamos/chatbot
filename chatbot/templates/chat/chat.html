@@ -472,7 +472,7 @@
         {% endfor %}
       </select>
 
-      <span id="status">✅ Prêt</span>
+      <span id="status"> Prêt</span>
     </div>
 
     <!-- Messages -->
@@ -561,7 +561,7 @@
 <div id="conv-panel-backdrop"></div>
 <aside id="conv-panel">
   <div style="display:flex; justify-content:space-between; align-items:center;">
-    <h4>💬 Mes conversations</h4>
+    <h4>Mes conversations</h4>
     <button id="conv-close" class="secondary" style="padding:2px 8px; font-size:0.8rem;">✕</button>
   </div>
 
@@ -622,10 +622,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!select || !modelView) return;
 
-  // Afficher le modèle sélectionné au chargement
+  // Affiche le modèle sélectionné au chargement
   modelView.textContent = select.value;
 
-  // Mettre à jour quand l'utilisateur change
+  // Met à jour quand l'utilisateur change
   select.addEventListener("change", (e) => {
     modelView.textContent = e.target.value;
   });
@@ -715,7 +715,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function setStatus(text, thinking=false) {
     if (thinking) {
       statusEl.innerHTML = `
-        <span>🧠 L’IA réfléchit…</span>
+        <span>L’IA réfléchit…</span>
         <span class="dots"><span></span><span></span><span></span></span>
       `;
       statusEl.style.color = "#eab308";
@@ -725,7 +725,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🔒 Bloquer / débloquer les entrées pendant la génération
+  //Bloque / débloque les entrées pendant la génération
   function setThinkingState(on) {
     isThinking = on;
 
@@ -798,12 +798,11 @@ document.addEventListener("DOMContentLoaded", () => {
         appendMessage("system", "Erreur réseau : " + err);
       })
       .finally(() => {
-        setStatus("✅ Prêt", false);
+        setStatus("l'IA est prêt à te repondre", false);
         setThinkingState(false);
         messageInput.value = "";
-        // Optionnel : vider le fichier après envoi
-        // pdfFileInput.value = "";
-        // fileNameEl.textContent = "";
+        pdfFileInput.value = "";
+        fileNameEl.textContent = "";
       });
   });
 
