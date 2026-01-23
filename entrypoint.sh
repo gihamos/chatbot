@@ -32,7 +32,7 @@ else:
         User.objects.create_superuser(username="admin", email="admin@chabot.info", password="admin")
         print(" SuperUser par défaut créé => username: admin / email: admin@chabot.info / password: admin")
     else:
-        print("SuperUser par défaut existe déjà, pas de création.")
+        print(" SuperUser par défaut existe déjà, pas de création.")
 EOF
 
 print( " Lancement de Gunicorn...")
