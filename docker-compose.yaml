@@ -19,7 +19,7 @@ services:
 
     volumes:
       - .:/app     
-      - django_data:/app/db.sqlite3 
+      - django_data:/app/data 
 
   ollama:
     image: ollama/ollama:latest

@@ -9,20 +9,20 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Installer les dépendances Python
+# Installe les dépendances Python
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Copier le projet
 COPY . .
 
-# Rendre le script exécutable
 RUN chmod +x /app/entrypoint.sh
 
 # Créer un utilisateur non-root
 RUN adduser --disabled-password --gecos '' django
+RUN mkdir -p /app/data && chown django:django /app/data
 USER django
+
 
 EXPOSE 8000
 
