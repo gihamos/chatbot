@@ -17,7 +17,6 @@ ENV/
 # --- Django ---
 *.sqlite3
 media/
-staticfiles/
 *.pot
 *.mo
 
