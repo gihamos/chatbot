@@ -440,7 +440,7 @@
   <!-- HEADER -->
   <header>
     <div>
-      <h3>🤖 Assistant IA</h3>
+      <h3> Assistant IA</h3>
       <div class="pill">
         <span class="pill-dot"></span>
         Django · Ollama · <b id="model_view"></b>
@@ -448,7 +448,7 @@
       <small>Connecté en tant que <strong>{{ request.user.username }}</strong></small>
     </div>
     <div id="header-actions">
-      <button id="conv-toggle" class="secondary">🗂 Conversations</button>
+      <button id="conv-toggle" class="secondary">Conversations</button>
 
       <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
@@ -515,7 +515,7 @@
           <div class="message-bubble">
             <div class="message-meta">Système</div>
             <div class="message-content">
-              <p>Commence une conversation avec le modèle IA 👇</p>
+              <p>Commence une conversation avec le modèle IA</p>
             </div>
           </div>
         </div>

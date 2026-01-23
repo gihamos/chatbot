@@ -8,6 +8,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from django.conf import settings
 from pdfminer.high_level import extract_text
+import smtplib
+from email.message import EmailMessage
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +23,59 @@ def _normalize_host(host: str) -> str:
     return test
 
 
+class Action:
+    def __init__(self,message):
+        self.message=message
+        pass
+    def execute(selft,params:Dict[str,Any])-> Dict[str,Any]:
+         """
+        Exécute l’action et retourne :
+        {
+          "status": "success" | "error",
+          "message": "..."
+        }
+        """
+    pass
+
+class ActionSendMail(Action):
+    def __init__(self, message):
+        super().__init__(message)
+        
+    def execute(selft, params):
+        """
+       Exécute l’action d’envoi d’un email.
+
+    Args:
+      self: Instance de l’action.
+      params (dict): Dictionnaire contenant les informations de l’email :
+        - to (str): Adresse email du destinataire
+        - subject (str): Sujet de l’email
+        - message (str): Contenu du message
+
+    Returns:
+        dict: Résultat de l’exécution de l’action :
+        - status (str): "success" ou "error"
+        - message (str): Message de confirmation ou d’erreur
+
+    Raises:
+    Exception: Levée si l’envoi de l’email échoue.
+    """
+
+        try:
+            # comment: 
+            msg =EmailMessage()
+            msg["from"]="gihamos@gmail.com"
+            msg["To"] = params["to"]
+            msg["Subject"] = params["subject"]
+            msg.set_content(params["message"])
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+             smtp.login("gihamos@gmail.com", "@Gihamos#0013")
+             smtp.send_message(msg)
+        except Exception as e:
+            raise e
+        # end try
+        return super().execute(params)
+
 
 def call_ollama_chat(messages: List[Dict[str, Any]], model: str, timeout: int = 120) -> Optional[str]:
     """
@@ -30,7 +85,6 @@ def call_ollama_chat(messages: List[Dict[str, Any]], model: str, timeout: int = 
     raw_host = getattr(settings, "OLLAMA_HOST", "http://localhost:11434")
     host = _normalize_host(raw_host)
     url = f"{host.rstrip('/')}/api/chat"
-
     payload = {
         "model": model,
         "messages": messages,

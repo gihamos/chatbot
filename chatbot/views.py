@@ -129,7 +129,7 @@ def send_message(request):
             content=f"[PDF] {uploaded_file.name} intégré au contexte."
         )
 
-    # 2) Si action = web → faire une recherche web et l'ajouter au contexte
+    # 2) Si action = web → on fait une recherche web et on l'ajoute au contexte
     if action == "web":
         try:
             search_summary = web_search(message)
