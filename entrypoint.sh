@@ -33,8 +33,9 @@ else:
         print(" SuperUser par défaut créé => username: admin / email: admin@chabot.info / password: admin")
     else:
         print(" SuperUser par défaut existe déjà, pas de création.")
-EOF
+
 
 print( " Lancement de Gunicorn...")
+EOF
 
 exec gunicorn --bind 0.0.0.0:8000 config.wsgi
